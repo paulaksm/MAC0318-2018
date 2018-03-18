@@ -48,7 +48,9 @@ git stash pop
 
 ##### Trabalhando com branches
 
-Muitas vezes durante a evolução do código, surge a necessidade de manter cópias estáveis do reposítorio para desenvolver novas funcionalidades sem comprometer o restante funcional. A melhor prática nestes casos, é criar _branches_ de uma branch estável, como por exemplo da branch _master_. 
+Em um projeto de software, muitas vezes, várias pessoas irão alterar os mesmos arquivos de código. Para que isso seja possível, é necessário que cada desenvolvedor possa ter uma versão isolada da aplicação,
+ou seja, uma versão do software que não é afetada pela modificação dos outros. Para resolver tal problema, uma boa prática é o uso de _branches_. Essa abordagem também é muito útil quando se deseja manter
+uma versão estável do projeto, pois tal versão pode ficar em uma branch separada. Para criar uma branch, pode-se usar os seguintes comandos
 
 ```
 git branch branchname     # cria a branch com o nome branchname

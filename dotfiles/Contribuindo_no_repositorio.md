@@ -1,6 +1,7 @@
 ## Tutorial pull-requests MAC0318-2018
 
-A disciplina MAC0318 do IME-USP permite aos alunos contribuírem com seus projetos no repositório da disciplina. Cada aluno possui uma cópia do repositório, realizada através do  _fork_ no repositório-base, e é possível que mudanças realizadas nestas cópias sejam enviadas para o repositório-base.
+A disciplina MAC0318 do IME-USP permite aos alunos contribuírem com seus projetos no repositório da disciplina. Cada aluno possui uma cópia do repositório, realizada através do  _fork_ no repositório-base.
+Isso possibilita que mudanças realizadas nestas cópias sejam enviadas para o repositório-base.
 
 Neste tutorial será detalhada a forma correta de contribuir na pasta __projetos__ do repostório MAC0318-2018.
 
@@ -14,7 +15,7 @@ git commit -m "Adicionando versao final do arquivo para o pull-request"
 #### 2. Criar branch com base na master do repositório da disciplina
 Substitua <branchname> pelo nome do branch que preferir.
 ```
-git checkout -b <branchname>
+git checkout upstream/master -b <branchname>
 ```
 
 #### 3. Localizar ID do commit final do arquivo
@@ -39,7 +40,7 @@ git cherry-pick <branch_em_que_o_commit_foi_realizado> <ID_do_commit>
 ```
 Exemplo do comando cherry-pick usando os dados do exemplo anterior:
 ```
-git cherry-pick aluno1 f8095863d460eb36d7310b97d3ec9c32d9e65b21
+git cherry-pick <branch_em_que_o_commit_foi_realizado>  f8095863d460eb36d7310b97d3ec9c32d9e65b21
 ```
 
 Caso alguma mensagem de erro apareça, execute o comando (substitua <nome_do_arquivo> pelo nome do arquivo a ser enviado):
