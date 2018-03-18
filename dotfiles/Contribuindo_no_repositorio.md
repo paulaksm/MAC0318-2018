@@ -40,7 +40,7 @@ git cherry-pick <branch_em_que_o_commit_foi_realizado> <ID_do_commit>
 ```
 Exemplo do comando cherry-pick usando os dados do exemplo anterior:
 ```
-git cherry-pick <branch_em_que_o_commit_foi_realizado>  f8095863d460eb36d7310b97d3ec9c32d9e65b21
+git cherry-pick aluno1 f8095863d460eb36d7310b97d3ec9c32d9e65b21
 ```
 
 Caso alguma mensagem de erro apareça, execute o comando (substitua <nome_do_arquivo> pelo nome do arquivo a ser enviado):
