@@ -62,6 +62,8 @@ Lembrando que o comando acima cria uma _branch_ com base na _branch_ em que o co
 #### Referências
 Esse tutorial de maneira alguma almeja detalhar a estrutura e comandos de sistemas de versionamento, apenas busca nortear os alunos da disciplina em comandos importantes e direcioná-los na busca por soluções.
 
+[Learn X in Y minutes: where X=git](https://learnxinyminutes.com/docs/git/)
+
 Um guia com comandos básicos está disponível em: https://github.com/juanfrans/GSAPP-AP/wiki/Github-Basic-Commands-(Terminal)
 
 [Git cheat sheet](https://gist.github.com/hofmannsven/6814451)
