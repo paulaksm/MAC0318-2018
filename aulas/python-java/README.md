@@ -1,0 +1,1 @@
+Iniciar primeiro o código no robo e depois o do python3.
