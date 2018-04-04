@@ -8,6 +8,7 @@ import USBInterface
 
 raise_exception = False
 try:
+    # retorna o primeiro brick encontrado pelo metodo find_bricks e faz a conexao
     brick = next(USBInterface.find_bricks(debug=False))
     brick.connect()
 except usb.core.NoBackendError:

@@ -66,15 +66,16 @@ class USBInterface(object):
         if self.debug:
             print ('Send:',end=" ")
             print (': {}'.format(ord(data)))
-        self.device.write(OUT_ENDPOINT, data, NXT_INTERFACE)
+        # O conteudo de data eh enviado do mestre para o escravo
+        self.device.write(OUT_ENDPOINT, data, NXT_INTERFACE) 
 
     def recv(self):
         #'Use to recieve raw data over USB connection ***ADVANCED USERS ONLY***'
+        # data recebe dados de um device nxt conectado
         data = self.device.read(IN_ENDPOINT, 64, 1000)
         if self.debug:
             print ('Recv:', end=" ")
             print (':'.join('{}'.format(c & 0xFF) for c in data))
-        # NOTE: bulkRead returns a tuple of ints ... make it sane
         return ''.join(chr(d & 0xFF) for d in data)
 
 def find_bricks(host=None, name=None, debug=False):
@@ -83,16 +84,3 @@ def find_bricks(host=None, name=None, debug=False):
         yield USBInterface(device, debug)
 
 
-#def main():
-#    brick_usb = find_bricks(debug=True)
-#    raise_exception = False
-#    try:
-#        brick_usb = next(find_bricks(debug=True))
-#        print(brick_usb)
-#        
-#    except usb.core.NoBackendError:
-#        raise_exception = True
-#    assert(raise_exception==0), "No NXT found..."
-#
-#if __name__ == '__main__':
-#    main()
