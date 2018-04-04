@@ -23,13 +23,7 @@ while True:
             break
         elif key.is_pressed('up'):
             brick.send('\x01')
-        elif key.is_pressed('down'):
-            brick.send('\x02')
-        elif key.is_pressed('left'):
-            brick.send('\x03')
-        elif key.is_pressed('right'):
-            brick.send('\x04')
-        else:
+       else:
             brick.send('\x05')
 
     except Exception as inst:

@@ -29,31 +29,13 @@ public class Remote {
         switch (data) {
             case 0x64:
                 return true;
-            case 0x1:
+            case 0x1: // forward
                 Motor.A.setSpeed(speed);
                 Motor.C.setSpeed(speed);
                 Motor.A.forward(); 
                 Motor.C.forward();
                 break;
-            case 0x2:
-                Motor.A.setSpeed(speed);
-                Motor.C.setSpeed(speed);
-                Motor.A.backward(); 
-                Motor.C.backward();
-                break;
-            case 0x3:
-                Motor.A.setSpeed(turnSpeed);
-                Motor.C.setSpeed(turnSpeed);
-                Motor.A.backward(); 
-                Motor.C.forward();
-                break;
-            case 0x4:
-                Motor.A.setSpeed(turnSpeed);
-                Motor.C.setSpeed(turnSpeed);
-                Motor.A.forward(); 
-                Motor.C.backward();
-                break;
-            default:
+           default:
                 Motor.A.stop(true); 
                 Motor.C.stop();
         }
