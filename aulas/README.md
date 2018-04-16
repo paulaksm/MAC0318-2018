@@ -12,4 +12,6 @@ Seção com os códigos explicados em sala de aula para o robô Lego Mindstorms 
 [04/04] `aula4/` -- introdução ao controle de motores não regulados   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `python-java` -- scripts básicos para comunicação entre códigos Python e Java usando a interface USB
 
-[11/04] `rule-based-classifier` -- classificação binária de imagens com base em regras usando o dataset MNIST 
+[11/04] No Files -- controle PID usando sensor óptico
+
+[18/04] `rule-based-classifier` -- classificação de imagens com base em regras usando o dataset MNIST 
