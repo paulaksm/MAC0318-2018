@@ -29,6 +29,11 @@ def plot_histogram(labels):
 def plot_img_grid(data, 
                   labels, 
                   max_cols=1):
+    """
+    Plot image vectors as full sized images in a grid
+
+    """
+    assert len(labels) <= 20, "Too many images to display, limit is 20."
     max_rows = math.ceil(len(labels) / max_cols)
     for i in range(len(labels)):
         plt.subplot(max_rows, 
@@ -45,6 +50,10 @@ def array_imshow(img_array,
                  shape=(28,28), 
                  grid=False, 
                  fontsize=18):
+    """
+    Plot an image vector 
+
+    """
     img = array2img(img_array, 
                     shape=shape)
     plt.xlabel("Digit: {}".format(label), 
@@ -55,6 +64,10 @@ def array_imshow(img_array,
 
 def array2img(img_array, 
               shape=(28,28)):
+    """
+    Given an image vector, returns an image in its original dimensions
+
+    """
     return np.reshape(img_array, shape)
 
 def get_samples(data, 
@@ -63,6 +76,10 @@ def get_samples(data,
     idx_samples = np.random.randint(low=0, 
                                     high=len(labels),
                                     size=size)
+    """
+    Returns a sample of  
+
+    """
     sample_data = np.array([data[idx] for idx in idx_samples])
     sample_labels = np.array([labels[idx] for idx in idx_samples])
     return sample_data, sample_labels
@@ -76,7 +93,7 @@ def plot_confusion_matrix_metrics(true_labels=None,
             normalized=normalized)
     ax = plt.gca()
     label_dict = {"True": 1, "False": 0}
-    str_labels = [ 'Digit {}'.format(label_dict.get(i.get_text(), i)) for i in ax.get_xticklabels() ] 
+    str_labels = [ 'Digit {}'.format(label_dict.get(i.get_text(), i.get_text())) for i in ax.get_xticklabels() ] 
     ax.set_xticklabels(str_labels, 
                        rotation=0, 
                        horizontalalignment='center')
