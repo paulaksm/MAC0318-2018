@@ -25,7 +25,7 @@ public class RemoteControlledCar {
     }
  
     public static boolean checkCommand(int data) {
-        System.out.println(data);
+        // System.out.println(data);
         switch (data) {
             case 0x64:
                 return true;
