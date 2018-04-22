@@ -1,6 +1,8 @@
 import os
 import sys
 import argparse
+import pickle
+import keyboard as key
 from pathlib import Path
 from Camera import Camera
 
@@ -10,8 +12,8 @@ two_level_up = path_current_dir.parents[1]
 sys.path.append(str(one_level_up))
 sys.path.append(str(two_level_up))
 
-from python_java.USBInterface import USBInterface
-import util
+import util         # file located in ../util.py
+import USBInterface # file located in ../../python_java/USBInterface.py
 
 class DataCollector(object):
 
@@ -21,7 +23,8 @@ class DataCollector(object):
             os.mkdir(name)
         self.dir_name = os.path.join(name, date)
         self.pickle_name = os.path.join(name, date + "_pickle")
-        os.mkdir(self.dir_name)
+        if not os.path.isdir(self.dir_name):
+            os.mkdir(self.dir_name)
         self.data_dict = {}
         self.count = 0
         self.brick = brick
@@ -30,7 +33,7 @@ class DataCollector(object):
     def save_image_and_label(self, img, label):
         img_name = str(self.count) + ".png"
         img_name = os.path.join(self.dir_name, img_name)
-        self.camera.save_picture(img_name, image)
+        self.camera.save_picture(img_name, img)
         self.data_dict[str(self.count)] = label
         self.count += 1
 
@@ -39,6 +42,7 @@ class DataCollector(object):
         Method to generate the dataset.
         The car is controlled with the keyboard using the arrow keys, to exit just type "q".
         """
+        print("Ready...")
         while True:
             img = self.camera.take_picture()
 
@@ -96,7 +100,7 @@ def main():
     try:
         brick = next(USBInterface.find_bricks(debug=False))
         brick.connect()
-    except usb.core.NoBackendError:
+    except StopIteration:
         raise_exception = True
     assert raise_exception==0, "No NXT found..." 
     dc = DataCollector(camera, brick, user_args.folder_name)
