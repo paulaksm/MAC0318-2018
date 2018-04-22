@@ -1,11 +1,5 @@
 import time
 
-def get_time():
-    return time.strftime("%Y-%m-%d-%H-%M-%S")
+def get_date():
+    return time.strftime("%Y-%m-%d-%H-%M")
 
-
-def main():
-    print(get_time())
-
-if __name__ == '__main__':
-    main()

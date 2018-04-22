@@ -28,3 +28,7 @@ class Camera(object):
         _, img = self.cam.read()
         return img
 
+    def save_picture(self, path, img):
+        cv2.imwrite(path, img)
+
+
