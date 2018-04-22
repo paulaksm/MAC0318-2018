@@ -2,7 +2,7 @@ import java.io.*;
 import lejos.nxt.*;
 import lejos.nxt.comm.*;
 
-public class Remote { 
+public class RemoteControlledCar { 
     public static DataOutputStream dataOut; 
     public static DataInputStream dataIn;
     public static USBConnection USBLink;
