@@ -77,7 +77,7 @@ def main():
     description = "Class for data collection using a camera and a remote controlled robot car connected to USB"
     parser = argparse.ArgumentParser(description=description)
     
-    parser.add_argument('-d',
+    parser.add_argument('-n',
                         '--folder_name',
                         default='pista',
                         type=str, help='name of the folder that the generated collection will be saved (default=pista)')
