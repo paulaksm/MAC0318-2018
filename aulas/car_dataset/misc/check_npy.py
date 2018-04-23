@@ -38,6 +38,7 @@ def show_sample(data,
         mode = "RGB"
     else: # greyscale or binary
         mode = "L"        
+    print("Image shape {}".format(img.shape))
     img = Image.fromarray(img, mode=mode)
     img.show()
     print("Action = {} for sample at index {}".format(label, sample))

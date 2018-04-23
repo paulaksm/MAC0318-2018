@@ -253,17 +253,20 @@ def main():
            "Multiple flags selected for image manipulation"
     data, labels = load_dataset(user_args.data_path,
                                 user_args.labels_path)
+    print("After load: data shape {}, labels shape {}".format(data.shape, labels.shape))
     if user_args.extend_dataset:
         data, labels = extend_dataset_flip_axis(data,
                                                 labels)
-    if user_args.binarize:
-        data, labels = binarize_dataset(data)
-    if user_args.grayscale:
-        data, labels = gray_dataset(data)
-    if user_args.green_channel:
-        data, labels = green_dataset(data)
-    #data, labels = dataset_augmentation(data, labels)
+        print("After extension: data shape {}, labels shape {}".format(data.shape, labels.shape))
     data_shape = (120, 160, 3)
+    if user_args.binarize:
+        data, data_shape = binarize_dataset(data)
+    if user_args.grayscale:
+        data, data_shape = gray_dataset(data)
+    if user_args.green_channel:
+        data, data_shape = green_dataset(data)
+    #data, labels = dataset_augmentation(data, labels)
+    print("After transformation: data shape {}, labels shape {}".format(data.shape, labels.shape))
     save_dataset(data,
                  labels,
                  user_args.new_data_folder_path,

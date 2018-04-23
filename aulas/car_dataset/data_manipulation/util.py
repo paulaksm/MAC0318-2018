@@ -29,7 +29,10 @@ def get_image_and_command(data_index,
     :return: image, command
     :rtype: numpy.ndarray, str
     """
-    img_array = data_index.reshape((height, width, channels))
+    if channels==3:
+        img_array = data_index.reshape((height, width, channels))
+    else:
+        img_array = data_index.reshape((height, width))
     command = int2command[label_index[0]]
     return img_array, command
 
