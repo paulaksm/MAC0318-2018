@@ -81,10 +81,12 @@ def main():
     user_args = parser.parse_args()
     if user_args.sample == -1:
         user_args.sample = None
-    dataset_info(user_args.data_npy,
-                 user_args.labels_npy)
-    show_sample(user_args.data_npy,
-                user_args.labels_npy,
+    data, labels = load_dataset(user_args.data_npy,
+                                user_args.labels_npy)
+    dataset_info(data,
+                 labels)
+    show_sample(data,
+                labels,
                 sample=user_args.sample,
                 transformation=user_args.transformation,
                 height=user_args.height,
