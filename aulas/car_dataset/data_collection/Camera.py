@@ -12,8 +12,10 @@ class Camera(object):
         self.width = width
         self.input_cam_device = input_cam_device
         self.cam = cv2.VideoCapture(input_cam_device)
+        print("Connecting to recording input device... ", end="", flush=True)
         while not self.cam.isOpened():
             pass
+        print("Successful")
         self.cam.set(WIDTH_ID, width)
         self.cam.set(HEIGHT_ID, height)
 

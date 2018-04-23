@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import argparse
 
 dict_command2int = {"up": 0, "left": 1, "right": 2}
-dict_int2command = {i[1]:i[0] for i in command2int.items()}
+dict_int2command = {i[1]:i[0] for i in dict_command2int.items()}
 
 def get_date():
     return time.strftime("%Y-%m-%d-%H-%M-%S")

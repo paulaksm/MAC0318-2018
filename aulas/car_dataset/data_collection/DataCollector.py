@@ -9,9 +9,9 @@ from Camera import Camera
 path_current_dir = Path(os.getcwd())
 one_level_up = path_current_dir.parents[0]
 two_level_up = path_current_dir.parents[1]
+parent_dir = os.path.join(str(two_level_up), "python_java")
 sys.path.append(str(one_level_up))
-sys.path.append(str(two_level_up))
-
+sys.path.append(str(parent_dir))
 import util         # file located in ../util.py
 import USBInterface # file located in ../../python_java/USBInterface.py
 
@@ -58,11 +58,11 @@ class DataCollector(object):
                 self.brick.send('\x02')
 
             elif key.is_pressed('left'):
-                self.brick.send('\x03')
+                self.brick.send('\x04')
                 self.save_image_and_label(img, 'left')
 
             elif key.is_pressed('right'):
-                self.brick.send('\x04')
+                self.brick.send('\x03')
                 self.save_image_and_label(img, 'right')
             else:
                 self.brick.send('\x05')
