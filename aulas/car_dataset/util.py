@@ -9,11 +9,11 @@ dict_int2command = {i[1]:i[0] for i in dict_command2int.items()}
 def get_date():
     return time.strftime("%Y-%m-%d-%H-%M-%S")
 
-# def command2int(command):
-#     return dict_command2int[command]
+def command2int(command):
+    return dict_command2int[command]
 
-# def int2command(label):
-#     return dict_int2command[label]
+def int2command(label):
+    return dict_int2command[label]
 
 def plot_histogram(label_path):
     """
