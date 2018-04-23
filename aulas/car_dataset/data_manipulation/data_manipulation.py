@@ -225,17 +225,42 @@ def main():
     parser.add_argument('labels_path',
                         type=str, help='path to current labels')
     parser.add_argument('new_data_folder_path',
-                        type=str, help='path to data and labels to be saved')  # noqa
+                        type=str, help='path to data and labels to be saved')  
     parser.add_argument('dataset_name',
-                        nargs='?', default='dataset', type=str, help='name for dataset. (Default) dataset')  # noqa
-
+                        default='dataset', 
+                        type=str, help='name for dataset. (Default) dataset')  
+    parser.add_argument('-b',
+                        '--binarize',
+                        action='store_true',
+                        help='flag to binarize the dataset (default=False)')
+    parser.add_argument('-g',
+                        '--grayscale',
+                        action='store_true',
+                        help='flag to grayscale the dataset (default=False)')
+    parser.add_argument('-gr',
+                        '--green_channel',
+                        action='store_true',
+                        help='flag to create the dataset with only its green channel (default=False)')
+    parser.add_argument('-x',
+                        '--extend_dataset',
+                        action='store_true',
+                        help='flag to extend the dataset by flipping its horizontal axis in left/right labeled images (default=False)')
     user_args = parser.parse_args()
 
+    assert not ((not user_args.binarize and user_args.green_channel) or 
+                (user_args.binarize and not user_args.grayscale and not user_args.green_channel)), "Multiple flags selected for image manipulation"
     data, labels = load_dataset(user_args.data_path,
                                 user_args.labels_path)
-    data, labels = extend_dataset_flip_axis(data,
-                                            labels)
-    data, labels = dataset_augmentation(data, labels)
+    if user_args.extend_dataset:
+        data, labels = extend_dataset_flip_axis(data,
+                                                labels)
+    if user_args.binarize:
+        data, labels = binarize_dataset(data)
+    if user_args.grayscale:
+        data, labels = gray_dataset(data)
+    if user_args.green_channel:
+        data, labels = green_dataset(data)
+    #data, labels = dataset_augmentation(data, labels)
     data_shape = (120, 160, 3)
     save_dataset(data,
                  labels,
