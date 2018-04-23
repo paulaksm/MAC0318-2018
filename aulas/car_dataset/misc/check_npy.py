@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 import numpy as np
+import cv2
 from PIL import Image
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -35,6 +36,7 @@ def show_sample(data,
                                        width=width,
                                        channels=channels)
     if transformation is None:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         mode = "RGB"
     else: # greyscale or binary
         mode = "L"        
@@ -50,18 +52,16 @@ def main():
     description = "Class for data collection using a camera and a remote controlled robot car connected to USB"
     parser = argparse.ArgumentParser(description=description)
     
-    parser.add_argument('-d',
-                        '--data_npy',
+    parser.add_argument('data_npy',
                         type=str, help='path to data npy file')
-    parser.add_argument('-l',
-                        '--labels_npy',
+    parser.add_argument('labels_npy',
                         type=str, help='path to labels npy file')
     parser.add_argument('-s',
                         '--sample',
                         default=-1,
                         type=int, help='index of item to be displayed (default=random)')
-    transformation_list = """grey,
-                             bin"""
+    transformation_list = """greyscale,
+                             binarize"""
     parser.add_argument('-t',
                         '--transformation',
                         default=None,

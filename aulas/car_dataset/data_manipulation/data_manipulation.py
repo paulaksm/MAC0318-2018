@@ -246,11 +246,8 @@ def main():
                         action='store_true',
                         help='flag to extend the dataset by flipping its horizontal axis in left/right labeled images (default=False)')
     user_args = parser.parse_args()
-
-    assert (not user_args.binarize and not user_args.green_channel and user_args.grayscale) or \
-           (not user_args.binarize and user_args.green_channel and not user_args.grayscale) or \
-           (user_args.binarize and not user_args.grayscale and not user_args.green_channel), \
-           "Multiple flags selected for image manipulation"
+    args_list = [user_args.binarize, user_args.green_channel, user_args.grayscale]
+    assert sum(args_list) <= 1, "Multiple flags selected for image manipulaiton"
     data, labels = load_dataset(user_args.data_path,
                                 user_args.labels_path)
     print("After load: data shape {}, labels shape {}".format(data.shape, labels.shape))
