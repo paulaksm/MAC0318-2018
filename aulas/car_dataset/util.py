@@ -15,14 +15,14 @@ def get_date():
 # def int2command(label):
 #     return dict_int2command[label]
 
-def plot_histogram(labelpath):
+def plot_histogram(label_path):
     """
     Plot dataset histogram 
 
     :type label_path: str 
     :param label_path: absolute path to labels.npy  
     """
-    labels = np.load(labelpath)
+    labels = np.load(label_path)
     bins = len(np.unique(labels))
     data_hist = plt.hist(labels, 
                          bins=np.arange(bins+1) - 0.5, 
