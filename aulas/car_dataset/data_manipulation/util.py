@@ -35,7 +35,7 @@ def get_image_and_command(data_index,
 
 
 def get_image(data_index,
-              height=1200,
+              height=120,
               width=160,
               channels=3):
     """
