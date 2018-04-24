@@ -5,6 +5,13 @@ import cv2
 import numpy as np
 from PIL import Image
 
+def _adjust_gamma(image, gamma=1.0):
+
+   invGamma = 1.0 / gamma
+   table = np.array([((i / 255.0) ** invGamma) * 255
+      for i in np.arange(0, 256)]).astype("uint8")
+
+   return cv2.LUT(image, table)
 
 def grayscale_image(input_image):
     """
@@ -19,21 +26,25 @@ def grayscale_image(input_image):
 
 
 def binarize_image(input_image, 
-                   threshold_value=177):
+                   threshold_value=177,
+                   gamma=0.3):
     """
     Convert input_image to binary representation
 
     :param input_image: image
     :type input_image: numpy.ndarray
     :param threshold_value: value to be used as a
-                          threshold
+                            threshold
     :type threshold_value: int
+    :param gamma: value for gamma correction, less than 1 decreases the brightness of the image
+    :type gamma: float
     :return: image in binary form
     :rtype: numpy.ndarray
     """
     gray_image = grayscale_image(input_image)
-    bin_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
-    _, bin_image = cv2.threshold(bin_image,
+    img_gamma = _adjust_gamma(gray_image, gamma=gamma)
+    blur = cv2.GaussianBlur(img_gamma, (5, 5), 0)
+    _, bin_image = cv2.threshold(blur,
                                  threshold_value,
                                  255,
                                  cv2.THRESH_BINARY + cv2.THRESH_OTSU)
