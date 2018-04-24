@@ -1,15 +1,18 @@
+sudo apt-get update
+sudo apt-get upgrade
+
 # Raspberry config
-sudo apt-get -y  remove --purge libreoffice*
-sudo apt-get -y purge minecraft-pi
-sudo apt-get -y purge wolfram-engine
+sudo apt-get remove --purge libreoffice*
+sudo apt-get purge minecraft-pi
+sudo apt-get purge wolfram-engine
 
 # Installing opencv-3.3.0 on python3
-sudo apt-get -y install build-essential git cmake pkg-config
-sudo apt-get -y install libjpeg-dev libtiff5-dev libjasper-dev libpng-dev
-sudo apt-get -y install libgtk2.0-dev 
-sudo apt-get -y install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
-sudo apt-get -y install libxvidcore-dev libx264-dev
-sudo apt-get -y install libatlas-base-dev gfortran
+sudo apt-get install build-essential git cmake pkg-config
+sudo apt-get install libjpeg-dev libtiff5-dev libjasper-dev libpng-dev
+sudo apt-get install libgtk2.0-dev 
+sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+sudo apt-get install libxvidcore-dev libx264-dev
+sudo apt-get install libatlas-base-dev gfortran imagemagick
 cd ~
 wget -O opencv.zip https://github.com/Itseez/opencv/archive/3.3.0.zip
 unzip opencv.zip
@@ -26,7 +29,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D BUILD_EXAMPLES=ON \
     -D WITH_GTK=ON \
     -D WITH_JPEG=OFF ..
-make -j2
+make -j3
 sudo make install
 sudo ldconfig
 
@@ -34,8 +37,8 @@ sudo ldconfig
 sudo pip3 install keyboard
 sudo pip3 install pybluez
 sudo pip3 install pyusb
-sudo apt-get -y install bluetooth libbluetooth-dev
-sudo apt-get -y  install libusb-dev
+sudo apt-get install bluetooth libbluetooth-dev
+sudo apt-get install libusb-dev
 
 # Setup USB connection for nxt robot
 sudo dd of=/etc/udev/rules.d/70-lego.rules << EOF
@@ -56,3 +59,8 @@ syntax on
 set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 EOF
 
+# Install remaining python packages
+sudo pip3 install -r requirements.txt
+
+# Remember to enable SSH and set timezone and keyboard settings 
+# Expand rootfs if not done automatically wheh booting for the first time
