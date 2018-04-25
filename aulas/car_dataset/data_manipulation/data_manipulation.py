@@ -60,11 +60,11 @@ def extend_dataset_flip_axis(data,
     return extended_images, extended_labels
 
 
-def transfor_dataset_with_one_channel(data,
-                                      transformation,
-                                      height=120,
-                                      width=160,
-                                      channels=3):
+def transfor_dataset(data,
+                     transformation,
+                     height=120,
+                     width=160,
+                     channels=3):
     """
     Create a new dataset by applying a function "transformation"
     available at image_manipulation.
@@ -118,11 +118,11 @@ def binarize_dataset(data,
     :return: transformed dataset, shape
     :rtype: np.array, tuple
     """
-    data, shape = transfor_dataset_with_one_channel(data,
-                                                    img_mani.binarize_image,
-                                                    height,
-                                                    width,
-                                                    channels)
+    data, shape = transfor_dataset(data,
+                                   img_mani.binarize_image,
+                                   height,
+                                   width,
+                                   channels)
     return data, shape
 
 
@@ -144,11 +144,11 @@ def gray_dataset(data,
     :return: transformed dataset, shape
     :rtype: np.array, tuple
     """
-    data, shape = transfor_dataset_with_one_channel(data,
-                                                    img_mani.grayscale_image,
-                                                    height,
-                                                    width,
-                                                    channels)
+    data, shape = transfor_dataset(data,
+                                   img_mani.grayscale_image,
+                                   height,
+                                   width,
+                                   channels)
     return data, shape
 
 
@@ -170,11 +170,36 @@ def green_dataset(data,
     :return: transformed dataset, shape
     :rtype: np.array, tuple
     """
-    data, shape = transfor_dataset_with_one_channel(data,
-                                                    img_mani.green_channel,
-                                                    height,
-                                                    width,
-                                                    channels)
+    data, shape = transfor_dataset(data,
+                                   img_mani.green_channel,
+                                   height,
+                                   width,
+                                   channels)
+    return data, shape
+
+def cut_top_bottom_dataset(data,
+                           height=120,
+                           width=160,
+                           channels=3):
+    """
+    Create a new dataset by applying the function top_bottom_cut.
+
+    :param data: dataset
+    :type data: np.array
+    :param height: image height
+    :type height: int
+    :param width: image width
+    :type width: int
+    :param channels: image channels
+    :type channels: int
+    :return: transformed dataset, shape
+    :rtype: np.array, tuple
+    """
+    data, shape = transfor_dataset(data,
+                                   img_mani.top_bottom_cut,
+                                   height,
+                                   width,
+                                   channels)
     return data, shape
 
 
@@ -233,6 +258,10 @@ def main():
                         '--binarize',
                         action='store_true',
                         help='flag to binarize the dataset (default=False)')
+    parser.add_argument('-c',
+                        '--cut_top_bottom',
+                        action='store_true',
+                        help='flag to cut the top and bottom of the dataset images, resizing to their original shape (default=False)')
     parser.add_argument('-g',
                         '--grayscale',
                         action='store_true',
@@ -256,6 +285,8 @@ def main():
                                                 labels)
         print("After extension: data shape {}, labels shape {}".format(data.shape, labels.shape))
     data_shape = (120, 160, 3)
+    if user_args.cut_top_bottom:
+        data, data_shape = cut_top_bottom_dataset(data)
     if user_args.binarize:
         data, data_shape = binarize_dataset(data)
     if user_args.grayscale:
