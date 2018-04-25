@@ -14,4 +14,6 @@ Seção com os códigos explicados em sala de aula para o robô Lego Mindstorms 
 
 [11/04] No Files -- controle PID usando sensor óptico
 
-[18/04] `rule-based-classifier` -- classificação de imagens com base em regras usando o dataset MNIST 
+[18/04] `rule_based_classifier` -- classificação de imagens com base em regras usando o dataset MNIST 
+
+[25/04] `car_dataset` -- contém subdiretórios referentes a coleta de imagens rotuladas e a manipulação das mesmas
