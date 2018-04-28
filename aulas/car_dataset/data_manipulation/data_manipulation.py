@@ -294,7 +294,8 @@ def main():
     if user_args.green_channel:
         data, data_shape = green_dataset(data)
     #data, labels = dataset_augmentation(data, labels)
-    print("After transformation: data shape {}, labels shape {}".format(data.shape, labels.shape))
+    if user_args.cut_top_bottom or user_args.binarize or user_args.green_channel or user_args.grayscale:
+        print("After transformation: data shape {}, labels shape {}".format(data.shape, labels.shape))
     save_dataset(data,
                  labels,
                  user_args.new_data_folder_path,
