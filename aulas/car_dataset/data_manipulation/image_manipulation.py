@@ -24,6 +24,23 @@ def grayscale_image(input_image):
     """
     return cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
 
+def extract_feature(img, divisions=4):
+    height_kernel = divisions
+    width_kernel = divisions
+
+    img_h = int(img.shape[0] / height_kernel)
+    img_w = int(img.shape[1] / width_kernel)
+    feature_vector = []
+    h = 0
+    for i in range(height_kernel):
+        w = 0
+        for j in range(width_kernel):
+            view = img[h:h+img_h, w:w+img_w]
+            feature_vector.append(np.count_nonzero(view))
+            w += img_w
+        h += img_h
+    return np.array(feature_vector)
+
 
 def binarize_image(input_image, 
                    threshold_value=177,

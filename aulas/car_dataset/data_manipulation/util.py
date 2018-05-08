@@ -29,10 +29,11 @@ def get_image_and_command(data_index,
     :return: image, command
     :rtype: numpy.ndarray, str
     """
-    if channels==3:
-        img_array = data_index.reshape((height, width, channels))
-    else:
-        img_array = data_index.reshape((height, width))
+    # if channels==3:
+    #     img_array = data_index.reshape((height, width, channels))
+    # else:
+    #     img_array = data_index.reshape((height, width))
+    img_array = get_image(data_index, height=height, width=width, channels=channels)
     command = int2command[label_index[0]]
     return img_array, command
 
@@ -57,6 +58,8 @@ def get_image(data_index,
     :return: image
     :rtype: numpy.ndarray
     """
+    if channels == 1:
+        return data_index.reshape((height, width))
     return data_index.reshape((height, width, channels))
 
 
@@ -137,3 +140,4 @@ def save_dataset(data,
     labels_path = os.path.join(folder_path, label_name)
     np.save(data_path, data)
     np.save(labels_path, labels)
+    print("Data shape {}   Labels shape{}".format(data.shape, labels.shape))

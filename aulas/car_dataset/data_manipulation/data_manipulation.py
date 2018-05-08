@@ -8,8 +8,8 @@ import image_manipulation as img_mani
 
 def extend_dataset_flip_axis(data,
                              labels,
-                             height=120,
-                             width=160,
+                             height=60,
+                             width=80,
                              channels=3):
     """
     Balance and extend dataset
@@ -62,8 +62,8 @@ def extend_dataset_flip_axis(data,
 
 def transfor_dataset(data,
                      transformation,
-                     height=120,
-                     width=160,
+                     height=45, # 120
+                     width=80, # 160
                      channels=3):
     """
     Create a new dataset by applying a function "transformation"
@@ -100,9 +100,10 @@ def transfor_dataset(data,
     return new_dataset, new_shape
 
 
+
 def binarize_dataset(data,
-                     height=120,
-                     width=160,
+                     height=45,
+                     width=80,
                      channels=3):
     """
     Create a new dataset by applying the function binarize_image.
@@ -254,11 +255,26 @@ def main():
     parser.add_argument('dataset_name',
                         default='dataset', 
                         type=str, help='name for dataset. (Default) dataset')  
+    parser.add_argument("-he",
+                        "--image_height",
+                        type=int,
+                        default=120,
+                        help="original height number (default=120)")
+    parser.add_argument("-w",
+                        "--image_width",
+                        type=int,
+                        default=160,
+                        help="original width number (default=160)")
+    parser.add_argument("-c",
+                        "--image_channels",
+                        type=int,
+                        default=3,
+                        help="number of channels (default=3)")
     parser.add_argument('-b',
                         '--binarize',
                         action='store_true',
                         help='flag to binarize the dataset (default=False)')
-    parser.add_argument('-c',
+    parser.add_argument('-ctb',
                         '--cut_top_bottom',
                         action='store_true',
                         help='flag to cut the top and bottom of the dataset images, resizing to their original shape (default=False)')
@@ -282,17 +298,34 @@ def main():
     print("After load: data shape {}, labels shape {}".format(data.shape, labels.shape))
     if user_args.extend_dataset:
         data, labels = extend_dataset_flip_axis(data,
-                                                labels)
+                                                labels,
+                                                height=user_args.image_height,
+                                                width=user_args.image_width,
+                                                channels=user_args.image_channels)
         print("After extension: data shape {}, labels shape {}".format(data.shape, labels.shape))
-    data_shape = (120, 160, 3)
+    data_shape = (user_args.image_height,
+                  user_args.image_width,
+                  user_args.image_channels)
     if user_args.cut_top_bottom:
-        data, data_shape = cut_top_bottom_dataset(data)
+        data, data_shape = cut_top_bottom_dataset(data,
+                                                  height=user_args.image_height,
+                                                  width=user_args.image_width,
+                                                  channels=user_args.image_channels)
     if user_args.binarize:
-        data, data_shape = binarize_dataset(data)
+        data, data_shape = binarize_dataset(data,
+                                            height=user_args.image_height,
+                                            width=user_args.image_width,
+                                            channels=user_args.image_channels)
     if user_args.grayscale:
-        data, data_shape = gray_dataset(data)
+        data, data_shape = gray_dataset(data,
+                                        height=user_args.image_height,
+                                        width=user_args.image_width,
+                                        channels=user_args.image_channels)
     if user_args.green_channel:
-        data, data_shape = green_dataset(data)
+        data, data_shape = green_dataset(data,
+                                         height=user_args.image_height,
+                                         width=user_args.image_width,
+                                         channels=user_args.image_channels)
     #data, labels = dataset_augmentation(data, labels)
     if user_args.cut_top_bottom or user_args.binarize or user_args.green_channel or user_args.grayscale:
         print("After transformation: data shape {}, labels shape {}".format(data.shape, labels.shape))
