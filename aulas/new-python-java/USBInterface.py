@@ -1,7 +1,8 @@
-# USB socket communication with LEGO Mindstorms NXT -- adapted from nxt-python library
 # Copyright (C) 2006, 2007  Douglas P Lau
 # Copyright (C) 2009  Marcus Wanner
 # Copyright (C) 2011  Paul Hollensen, Marcus Wanner
+#
+# Modified by @paulaksm in June, 2018
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,13 +27,22 @@ NXT_CONFIGURATION = 1
 NXT_INTERFACE     = 0
 
 class USBInterface(object):
-    'Object for USB connection to NXT'
+    """
+    Class to communicate with a USB device
+
+    :param device: USB device connected
+    :type device: usb.core.Device
+    :param debug: flag to turn verbose mode on (default=False)
+    :type debug: bool
+    """
 
     bsize = 60  
 
     type = 'usb'
 
-    def __init__(self, device, debug=False):
+    def __init__(self, 
+                 device, 
+                 debug=False):
         self.device = device
         self.debug = debug
 
@@ -40,6 +50,9 @@ class USBInterface(object):
         return "USB {}".format(self.device)
 
     def connect(self):
+        """
+        Connect to device
+        """
         if self.debug:
             print ('Connecting via USB...')
         try:
@@ -54,14 +67,33 @@ class USBInterface(object):
             print ('Connected.')
 
     def close(self):
+        """
+        Close connection
+        """
         if self.debug:
             print ('Closing USB connection...')
         self.device = None
         if self.debug:
             print ('USB connection closed.')
 
-    def send(self, data, dtype=None):
-        # i - integer / d - double / f - float / ? - bool
+    def send(self, 
+             data, 
+             dtype=None):
+        """
+        Send data to device, packed using big-endian convention by default.
+        Float data can be packed as float or double; if double the argument dtype must be dtype='d'
+        If dtype is not passed (dtype=None), the class type is infered from the data itself.
+        
+        dtype='?' - bool
+        dtype='i' - int
+        dtype='f' - float
+        dtype='d' - double
+
+        :param data: data to be sent
+        :type data: int, float or bool
+        :param dtype: type of the data to be sent (default=None)
+        :type dtype: str  
+        """ 
         if self.debug:
             print ('Send:',end=" ")
             print (': {}'.format(ord(data)))
@@ -80,8 +112,20 @@ class USBInterface(object):
         encode = struct.pack('>{}'.format(dtype), data)
         self.device.write(OUT_ENDPOINT, encode, NXT_INTERFACE) 
 
-    def recv(self, dtype='i'):
-        # i - integer / d - double / f - float / s - string / ? - bool
+    def recv(self, 
+             dtype='i'):
+        """
+        Recieve data from device of a specific dtype using big-endian convention. 
+        
+        dtype='?' - bool
+        dtype='i' - int
+        dtype='f' - float
+        dtype='d' - double
+        dtype='s' - str
+
+        :param dtype: type of the data to be sent (default='i')
+        :type dtype: str  
+        """ 
         data = self.device.read(IN_ENDPOINT, 64, 1000)
         if self.debug:
             print ('Recv:', end=" ")
@@ -91,7 +135,12 @@ class USBInterface(object):
         decode = struct.unpack('>{}'.format(dtype), data)
         return decode[0]
 
-def find_bricks(host=None, name=None, debug=False):
-    #'Use to look for NXTs connected by USB only. 
+def find_bricks(debug=False):
+    """
+    Returns a generator with the located USB devices that corresponds to Lego NXT brick specification.  
+
+    :param debug: flag to turn verbose mode on (default=False)
+    :type debug: bool 
+    """  
     for device in usb.core.find(find_all=True, idVendor=ID_VENDOR_LEGO, idProduct=ID_PRODUCT_NXT):
         yield USBInterface(device, debug)

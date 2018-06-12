@@ -30,10 +30,10 @@ while True:
             brick.send(2)
         elif key.is_pressed('down'):
             brick.send(3)
-        elif key.is_pressed('space'):
+        elif key.is_pressed('space'): 
             brick.send(4)
-            sonar = brick.recv('i')
-            print("\nSonar value: ", sonar)
+            val = brick.recv('i')
+            print("\nValue: ", val)
         elif key.is_pressed('g'):
             brick.send(6)
             msg = brick.recv('s')
