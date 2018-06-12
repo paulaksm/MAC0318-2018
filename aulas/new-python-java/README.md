@@ -9,7 +9,7 @@ Iniciar primeiro o código no robô e depois o código do python3.
 __Obs: executar código car_controller.py como sudo__
 
 #### Comandos (car_controller.py):
-| 'comando'		| funcionalidade						   |	
+| Teclado		| Funcionalidade						   |	
 |---------------|------------------------------------------|
 | 'q'           | encerrar o programa                      |
 | 'up_arrow'    | mover robô para frente                   |
