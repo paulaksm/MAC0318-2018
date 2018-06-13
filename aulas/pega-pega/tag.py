@@ -6,6 +6,7 @@ from socket import error as SocketError
 from robot import Robot
 import time
 
+# intervalo do jogo
 run_time = 5
 
 class TagServer(threading.Thread):

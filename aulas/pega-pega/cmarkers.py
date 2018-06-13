@@ -8,28 +8,18 @@ def getCMarkers (img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img3 = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, 10)
     
-    ####print("threshold", (cv2.getTickCount() - e1)/ cv2.getTickFrequency())
     kernel = np.ones((2,2),np.uint8)
     img2 = cv2.morphologyEx(img3, cv2.MORPH_CLOSE, kernel)
-    ####print("close", (cv2.getTickCount() - e1)/ cv2.getTickFrequency())
-    # cv2.imshow("m3", img2)
-    # kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
-    # img2 = cv2.dilate(img2,kernel,iterations = 2)
 
     kernel = np.ones((2,2),np.uint8)
     img2 = cv2.dilate(img2,kernel, 1)
 
-    # cv2.imshow("m3", img2)
-    ####print("dilate", (cv2.getTickCount() - e1)/ cv2.getTickFrequency())
+    # cv2.imshow("test1", img2)
+
     # Setup SimpleBlobDetector parameters.
     params = cv2.SimpleBlobDetector_Params()
     params.filterByInertia = False
     params.filterByConvexity = False
-
-    # # Change thresholds
-    # params.minThreshold = 240
-    # params.maxThreshold = 255
-    # params.thresholdStep = 1
 
     # Filter by Area.
     params.filterByArea = True
@@ -52,32 +42,25 @@ def getCMarkers (img):
     # Create a detector with the parameters
     detector = cv2.SimpleBlobDetector_create(params)
 
-
     # Detect blobs.
     keypoints = detector.detect(img2)
 
 
-    ####print("blob", (cv2.getTickCount() - e1)/ cv2.getTickFrequency())
-
-    # Draw detected blobs as red circles.
-    # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures
-    # the size of the circle corresponds to the size of blob
-    k = []
-    kk = []
-    #####print(len(keypoints))
+    points = []
+    validpoints = []
     for point  in keypoints:
         count = []
         for p  in keypoints:
+            distance = (p.pt[0]-point.pt[0])**2+(p.pt[1]-point.pt[1])**2
             if p == point:
                 continue
-            elif (p.pt[0]-point.pt[0])**2+(p.pt[1]-point.pt[1])**2 <= (point.size*4.5)**2 and (abs(point.size/p.size-1) <= 0.3):
+            elif distance <= (point.size*4.5)**2 and (abs(point.size/p.size-1) <= 0.3):
                 count.append(p.pt)
         if len(count) >= 2:
-            k.append((point.pt, count))
-            kk.append(point)
+            points.append((point.pt, count))
+            validpoints.append(point)
 
-    ####print("near", (cv2.getTickCount() - e1)/ cv2.getTickFrequency())
-    for point in k:
+    for point in points:
         p, near = point
         # distance open the angre and 90 degree
         midistance = math.pi/30.0
@@ -99,7 +82,7 @@ def getCMarkers (img):
                     addu = u/6.0
                     addv = v/6.0
                     conners = [p-addu-addv, bottom+addu-addv, rigth-addu+addv, conner+addu+addv]
-                    trans = get_transform_matrix_points(conners, [10, 10], 10)
+                    trans = transformMatrixPoints(conners, [10, 10], 10)
                     code = cv2.warpPerspective(gray, trans, dsize=(100, 100))
                     # code = cv2.adaptiveThreshold(code, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 25, 1)
 
@@ -108,7 +91,6 @@ def getCMarkers (img):
                         continue
                     # cv2.imshow("m2", code)
 
-
                     uu = np.array([0, 1])
                     angle = np.math.atan2(np.linalg.det([v,uu]),np.dot(v,uu))
 
@@ -116,7 +98,7 @@ def getCMarkers (img):
                     if number != 0:
                         markers.append([number, mid, angle])
     
-    img2 = cv2.drawKeypoints(img2, kk, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    # img2 = cv2.drawKeypoints(img2, validpoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
     # cv2.imshow("m3", img2)
     return markers
 
@@ -132,7 +114,7 @@ def getNumber(img, threshold):
     # print(np.array(mean).astype(np.uint8))
     # print((mean[0][0]+mean[3][3])/2.0)
     threshold = (mean[0][0]+mean[3][3])/2.0*0.85
-    print(threshold)
+    # print(threshold)
     mean = np.array(mean) >= threshold
     valid = mean[0, 0] == False
     valid = valid and mean[0, 3] == False
@@ -159,28 +141,21 @@ def getNumber(img, threshold):
         number += 8
     return number
 
-def get_transform_matrix_points(corners, board_size, dpi):
-    # Read a frame from the video device
-
-    # Close the calibration window:
-    # cv2.destroyWindow("Calibrate")
- 
-    # If the user selected 4 points
-    if (len(corners) == 4):
-        # Do calibration
- 
+# Recebe 
+def transformMatrixPoints(corners, board_size, dpi):
+    if (len(corners) == 4): 
         # src is a list of 4 points on the original image selected by the user
         # in the order [TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT]
         src = np.array(corners, np.float32)
  
-        # dest is a list of where these 4 points should be located on the
-        # rectangular board (in the same order):
-        dest = np.array( [ (0, 0), (0, board_size[1]*dpi), (board_size[0]*dpi, 0), (board_size[0]*dpi, board_size[1]*dpi) ], np.float32)
+        a = (0, board_size[1]*dpi)
+        b = (board_size[0]*dpi, 0)
+        c = (board_size[0]*dpi, board_size[1]*dpi)
+        dest = np.array( [ (0, 0), a, b, c ], np.float32)
  
         # Calculate the perspective transform matrix
         trans = cv2.getPerspectiveTransform(src, dest)
  
-        # If we were given a calibration filename, save this matrix to a file
         return trans
     else:
         return None
