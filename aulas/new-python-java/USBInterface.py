@@ -36,6 +36,9 @@ class USBInterface(object):
     :type debug: bool
     """
 
+    id2type = {'f': float, 'i': int, '?': bool, 's': str}
+    type2id = { id2type[val_id]:val_id for val_id in id2type.keys() }
+
     bsize = 60  
 
     type = 'usb'
@@ -94,6 +97,7 @@ class USBInterface(object):
         :param dtype: type of the data to be sent (default=None)
         :type dtype: str  
         """ 
+        assert isinstance(data, str) or dtype == 's', "Can't send string data"
         if self.debug:
             print ('Send:',end=" ")
             print (': {}'.format(ord(data)))
@@ -107,8 +111,10 @@ class USBInterface(object):
             else:
                 print("Data type not recognized as int, bool or float...")
                 return -1
+        elif dtype != 'd':
+            assert isinstance(data, id2type[dtype]), "Value for dtype doesn't correspond to the type of data parameter"
         else:
-            assert dtype == 'd', "Expected 'd' indicating a double"
+            assert isinstance(data, float), "Expected 'd' indicating a double and data of type float"
         encode = struct.pack('>{}'.format(dtype), data)
         self.device.write(OUT_ENDPOINT, encode, NXT_INTERFACE) 
 
