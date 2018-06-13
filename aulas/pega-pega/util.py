@@ -44,6 +44,7 @@ def get_transform_matrix(dev, board_size, dpi, calib_file = None):
     text = "[TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT]"
     cv2.putText(img, text, (0,30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
     cv2.imshow("Calibrate", img)
+    print(img.shape)
  
     # Register the mouse callback on this window. When 
     # the user clicks anywhere in the "Calibrate" window,

@@ -42,6 +42,8 @@ if __name__ == "__main__":
     # Se necessario, conecta a camera
     if camera:
         device = open_camera(cam_id)
+        device.set(cv2.CAP_PROP_FRAME_WIDTH, 1920);
+        device.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080);
         board_size = [board_size[1], board_size[0]]
 
     # Size (in pixels) of the transformed image

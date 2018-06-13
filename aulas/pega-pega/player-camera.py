@@ -6,7 +6,7 @@ import signal, sys
 import math
 import time
 
-rid = 12
+rid = 5
 run = False
 board = None
 tagplayer = -1
