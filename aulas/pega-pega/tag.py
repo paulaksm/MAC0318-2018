@@ -61,7 +61,7 @@ class TagServer(threading.Thread):
             for line in self.map:
                 if i.intersectLine(line):
                     print(i.idd, " PAUSE")
-                    i.send("PAUSE\n")
+                    self.brodcast("PAUSE "+str(i.idd))
                     break
 
             # se nao eh o pegador continua
