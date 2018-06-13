@@ -118,6 +118,7 @@ if __name__ == "__main__":
             cv2.putText(img, str(fps), (0,60), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
             res = img
 
+            res = cv2.resize(res,None,fx=.5, fy=.5)
             cv2.imshow("warped", res)
  
         else: # if we failed to capture (camera disconnected?), then quit

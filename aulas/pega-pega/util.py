@@ -43,9 +43,9 @@ def get_transform_matrix(dev, board_size, dpi, calib_file = None):
     # Displace image to user
     text = "[TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT]"
     cv2.putText(img, text, (0,30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
+    img = cv2.resize(img,None,fx=.5, fy=.5)
     cv2.imshow("Calibrate", img)
-    print(img.shape)
- 
+
     # Register the mouse callback on this window. When 
     # the user clicks anywhere in the "Calibrate" window,
     # the function mouse_click_callback() is called (defined above)
@@ -71,7 +71,7 @@ def get_transform_matrix(dev, board_size, dpi, calib_file = None):
  
         # src is a list of 4 points on the original image selected by the user
         # in the order [TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT]
-        src = np.array(corner_point_list, np.float32)
+        src = np.array(corner_point_list, np.float32)*2
  
         # dest is a list of where these 4 points should be located on the
         # rectangular board (in the same order):
