@@ -34,6 +34,8 @@ while not client.quit:
     elif px is None:
         board = client.getFieldInfo()
         px, py = board[0]*random(), board[1]*random()
+        objectslines = board[2]
+        print(objectslines)
         course = math.pi*2.0*random()
         client.setPosition(px, py, course)
 
