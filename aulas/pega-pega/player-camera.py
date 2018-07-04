@@ -11,7 +11,7 @@ run = False
 board = None
 tagplayer = -1
 
-client = TagClient('localhost', 10318)
+client = TagClient('192.168.0.100', 10318)
 client.info(rid, 10, 10, 5, 5)
 
 px, py, course = None, None, None

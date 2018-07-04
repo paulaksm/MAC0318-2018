@@ -7,6 +7,9 @@ import math
 import time
 from numpy.linalg import norm
 import numpy as np
+from potential_fields import potencial
+import cv2
+
 
 rid = randint(100, 1000)
 run = False
@@ -24,6 +27,7 @@ def signal_handler(signal, frame):
     sys.exit(0)
 signal.signal(signal.SIGINT, signal_handler)
 
+
 players = {}
 
 while not client.quit:
@@ -31,58 +35,69 @@ while not client.quit:
     # nao recebeu informacoes do campo
     if client.getFieldInfo() is None:
         continue
-    elif px is None:
+    elif px is None and py is None:
         board = client.getFieldInfo()
-        px, py = board[0]*random(), board[1]*random()
-        # objectslines = board[2]
-        print(board)
-        course = math.pi*2.0*random()
+        # posicao inicial
+        px, py = 100+random()*100, 50+random()*50 # posicao aleatoria por estar no virtual
+        course = math.pi*2.0*random() # virtual robot heading direction
         client.setPosition(px, py, course)
 
+    # # mostra o campo potencial
+    maplines = client.getMapLines() # retorna todas as linhas dos obstaculos...as linhas sao informadas no servidor (main.py)
+
     # jogo esta parado
-    if client.getStatus() is False:
+    if client.getStatus() is False: # Retorna falso se o jogador foi penalizado e tem que ficar parado
         players = {}
         continue
 
     # jogo esta parado
-    if client.isPause() is True:
+    if client.isPause() is True: # pergunta se o jogo foi parado no servidor (pelo arquivo main.py)
         time.sleep(5)
         client.setPause()
 
     # nao recebeu informacoes do pegador
-    if client.getTagInfo() is None:
+    if client.getTagInfo() is None: # retorna o ID do pegador
         continue
 
     # verifica se ha posicoes novas
-    newposs = client.getPosition()
+    newposs = client.getPosition() # toda vez que uma posição atualizada (robo informou que esta em uma nova posiçaõ ou a camera detectou que o robo esta em uma nova posição)
+    # newposs é uma lista de atualizações recebidas...retorna uma lista vazia se nao tiver novas infos
     for info in newposs:
         posx, posy, course, idd, xsize, ysize, xtag, ytag = info
-        if idd != rid:
+        if idd != rid: # atualizo as posições de todos os demais robos
             players[idd] = [posx, posy]
+    tag, interval = client.getTagInfo()  # retorna o ID do pegador e quando ele começara como pegador, interval é um timestamp
 
-    tag, interval = client.getTagInfo()  
-    pos = [players[p] for p in players]
+    objectives, dangers = [], [] 
+    stoped = False
 
-    if time.time() <= interval:
+    if time.time() <= interval: # se pegador ainda nao está "ativo", executo o código abaixo
         # comportamento de fuga
-        if tag in players and tag != rid:
+        if tag in players and tag != rid: # o pegador esta na lista de jogadores e eu nao sou pegador
             # foge se nao for pegador 
-            px = px + (px-players[tag][0])/180.0
-            py = py + (py-players[tag][1])/180.0
-
-            course = course+(random()-0.5)/5.0
-            client.setPosition(px, py, course)
+            dangers.append(players[tag]) # add pegador como um perigo
+        else:
+            # fica parado
+            stoped = True # caso contrario fico parado, pois sou o pegador e aguardo o intervalo para iniciar
     else:
 
-        if len(pos) >= 1 and tag == rid:
-            move = np.array([px-pos[0][0], py-pos[0][1]])
-            move =  move/norm(move)*0.5
-            px = px - move[0]
-            py = py - move[1]
+        if len(players) >= 1 and tag == rid: 
+            # pega
+            for i in players:
+                objectives.append(players[i]) # adiciono cada outro jogador como objetivo 
 
         if tag != rid:
-            px = px+(random()-0.5)
-            py = py+(random()-0.5)
+            # foge
+            dangers.append(players[tag]) # adiciono o tag como perigo
 
-        course = course+(random()-0.5)/5.0
-        client.setPosition(px, py, course)
+    
+    F, U = potencial(np.array([px, py]), maplines, objectives, dangers) # calculo o campo potencial
+
+    # calcula angulo estre dois vetores
+    v = np.array([0, 1]) # referente ao vetor 0,1
+    angle = np.math.atan2(np.linalg.det([F,v]),np.dot(F,v))
+
+    F /= 100 # divido a força pq estava forte demais na simulação
+    if not stoped:
+        px, py = F[0]+px, F[1]+py
+        client.setPosition(px, py, angle)

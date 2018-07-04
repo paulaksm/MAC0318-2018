@@ -1,31 +1,24 @@
 import bluetooth
 from robot import Robot
 from tag import TagClient
-from random import randint, random
+from random import randint, random, choice
 import signal, sys
 import math
 import time
 import numpy as np
 
-serverMACAddress = '00:16:53:18:2E:17'
+# 001653182E17
+serverMACAddress = '00:16:53:18:2E:17' 
 port = 1
 s = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 s.connect((serverMACAddress, port))
-
-#while 1:
-#    text = bytes([1])
-#    if text == "quit":
-#        break
-#    s.send(bytes([1]))
-#sock.close()
-
 
 rid = 11
 run = False
 board = None
 tagplayer = -1
 
-client = TagClient('localhost', 10318)
+client = TagClient('192.168.0.101', 10318)
 client.info(rid, 14, 19, 7, 13.5)
 
 px, py, course = None, None, None
@@ -39,22 +32,29 @@ signal.signal(signal.SIGINT, signal_handler)
 
 players = {}
 
+behaviour = [-0.1, -3, 5]
+beha_dict = {-0.1: 'forward', -3:'left', 5:'right'}
+
 while not client.quit:
-    time.sleep(0.4)
 
     # nao recebeu informacoes do campo
     if client.getFieldInfo() is None:
         continue
-    elif px is None:
+    elif px is None and py is None:
         board = client.getFieldInfo()
-        px, py = board[0]*random(), board[1]*random()
-        course = math.pi*2.0*random()
 
-    # jogo esta pausado
+    # # mostra o campo potencial
+    maplines = client.getMapLines()
+
+    # jogo esta parado
     if client.getStatus() is False:
         players = {}
-        s.send(bytes([0x65]))
         continue
+
+    # jogo esta parado
+    if client.isPause() is True:
+        time.sleep(5)
+        client.setPause()
 
     # nao recebeu informacoes do pegador
     if client.getTagInfo() is None:
@@ -70,38 +70,39 @@ while not client.quit:
             px, py, course = posx, posy, courser
 
     tag, interval = client.getTagInfo()  
-    pos = [players[p] for p in players]
 
-    x1, y1 = 0, 0
-    if time.time() >= interval and len(pos) >= 1 and tag == rid:
-        print("Pegando")
-        x1 = -py+pos[0][1]
-        y1 = -px+pos[0][0]
-    elif tag != rid:
-        print("Fugindo")
-        x1 = py-players[tag][1]
-        y1 = px-players[tag][0]
+    objectives, dangers = [], []
+    stoped = False
 
+    if time.time() <= interval:
+        # comportamento de fuga
+        if tag in players and tag != rid:
+            # foge se nao for pegador 
+            dangers.append(players[tag])
+        else:
+            # fica parado
+            stoped = True
     else:
-        print("Esperando")
-        s.send(bytes([5]))
-        continue
-    x2 = math.cos(course)
-    y2 = math.sin(course)
 
-    u = np.array([-x1, y1])
-    v = np.array([x2, -y2])
-    angle = np.math.atan2(np.linalg.det([u,v]),np.dot(u,v))
+        if len(players) >= 1 and tag == rid:
+            # pega
+            for i in players:
+                if players[i] != rid:
+                    objectives.append(players[i])
 
-    print([u,v], angle)
+        if tag != rid:
+            # foge
+            dangers.append(players[tag])
 
-    if abs(angle) < 0.2:
-        s.send(bytes([1]))
-    elif angle < 0:
-        s.send(bytes([4]))
-    else:
-        s.send(bytes([3]))
+    angle = choice(behaviour)
+    print('Command {}:'.format(beha_dict.get(angle)))
+    if not stoped:
+        if abs(angle) < 0.2:
+            s.send(bytes([1])) # forward
+        elif angle < 0:
+            s.send(bytes([4])) # left
+        else:
+            s.send(bytes([3])) # right
 
 s.send(bytes([0x65]))
-s.send(bytes([0x64]))
-
+s.send(bytes([0x64])) # encerra a aplicacao
